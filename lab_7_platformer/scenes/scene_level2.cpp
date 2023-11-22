@@ -21,10 +21,9 @@ void Level2Scene::Load() {
   {
     // *********************************
 
-
-
-
-
+    auto player = makeEntity();
+    player->setPosition
+    player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
 
     // *********************************
     player->addTag("player");
@@ -38,13 +37,16 @@ void Level2Scene::Load() {
                        Vector2f(0, 24));
     // *********************************
     // Add HurtComponent
+    player->addComponent<HurtComponent>();
 
     // Add ShapeComponent, Red 16.f Circle
-
-
-
+    auto s = enemy->addComponent<ShapeComponent>();
+    s->setShape<sf::CircleShape>(16.f, 3);
+    s->getShape().setFillColor(Color::Red);
+    s->getShape().setOrigin(Vector2f(16.f, 16.f));
 
     // Add EnemyAIComponent
+    enemy->addComponent<EnemyAIComponent>();
 
     // *********************************
   }
@@ -64,14 +66,7 @@ void Level2Scene::Load() {
   // Add physics colliders to level tiles.
   {
     // *********************************
-
-
-
-
-
-
-
-
+      turret->addComponent<PhysicsComponent>();
     // *********************************
   }
 
@@ -86,13 +81,13 @@ void Level2Scene::UnLoad() {
   Scene::UnLoad();
 }
 
-void Level2Scene::Update(const double& dt) {
+void Level2Scene::Update(const double &dt) {
   Scene::Update(dt);
   const auto pp = player->getPosition();
   if (ls::getTileAt(pp) == ls::END) {
-    Engine::ChangeScene((Scene*)&level3);
+    Engine::ChangeScene((Scene *)&level3);
   } else if (!player->isAlive()) {
-    Engine::ChangeScene((Scene*)&level2);
+    Engine::ChangeScene((Scene *)&level2);
   }
 }
 
