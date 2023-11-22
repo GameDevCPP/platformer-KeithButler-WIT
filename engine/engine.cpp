@@ -10,15 +10,15 @@
 
 using namespace sf;
 using namespace std;
-Scene* Engine::_activeScene = nullptr;
+Scene *Engine::_activeScene = nullptr;
 std::string Engine::_gameName;
 
 static bool loading = false;
 static float loadingspinner = 0.f;
 static float loadingTime;
-static RenderWindow* _window;
+static RenderWindow *_window;
 
-void Loading_update(float dt, const Scene* const scn) {
+void Loading_update(float dt, const Scene *const scn) {
   //  cout << "Eng: Loading Screen\n";
   if (scn->isLoaded()) {
     cout << "Eng: Exiting Loading Screen\n";
@@ -34,10 +34,10 @@ void Loading_render() {
   octagon.setOrigin(Vector2f(80, 80));
   octagon.setRotation(degrees(loadingspinner));
   octagon.setPosition(Vcast<float>(Engine::getWindowSize()) * .5f);
-  octagon.setFillColor(Color(255,255,255,min(255.f,40.f*loadingTime)));
+  octagon.setFillColor(Color(255, 255, 255, min(255.f, 40.f * loadingTime)));
   static Text t("Loading", *Resources::get<sf::Font>("RobotoMono-Regular.ttf"));
-  t.setFillColor(Color(255,255,255,min(255.f,40.f*loadingTime)));
-  t.setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.4f,0.3f));
+  t.setFillColor(Color(255, 255, 255, min(255.f, 40.f * loadingTime)));
+  t.setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.4f, 0.3f));
   Renderer::queue(&t);
   Renderer::queue(&octagon);
 }
@@ -69,7 +69,7 @@ void Engine::Update() {
   }
 }
 
-void Engine::Render(RenderWindow& window) {
+void Engine::Render(RenderWindow &window) {
   if (loading) {
     Loading_render();
   } else if (_activeScene != nullptr) {
@@ -80,7 +80,7 @@ void Engine::Render(RenderWindow& window) {
 }
 
 void Engine::Start(unsigned int width, unsigned int height,
-                   const std::string& gameName, Scene* scn) {
+                   const std::string &gameName, Scene *scn) {
   RenderWindow window(VideoMode(width, height), gameName);
   _gameName = gameName;
   _window = &window;
@@ -120,7 +120,7 @@ std::shared_ptr<Entity> Scene::makeEntity() {
 
 void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }
 
-void Engine::ChangeScene(Scene* s) {
+void Engine::ChangeScene(Scene *s) {
   cout << "Eng: changing scene: " << s << endl;
   auto old = _activeScene;
   _activeScene = s;
@@ -131,14 +131,14 @@ void Engine::ChangeScene(Scene* s) {
 
   if (!s->isLoaded()) {
     cout << "Eng: Entering Loading Screen\n";
-    loadingTime =0;
+    loadingTime = 0;
     _activeScene->LoadAsync();
     //_activeScene->Load();
     loading = true;
   }
 }
 
-void Scene::Update(const double& dt) { ents.update(dt); }
+void Scene::Update(const double &dt) { ents.update(dt); }
 
 void Scene::Render() { ents.render(); }
 
@@ -148,8 +148,7 @@ bool Scene::isLoaded() const {
     // Are we already loading asynchronously?
     if (_loaded_future.valid() // yes
         &&                     // Has it finished?
-        _loaded_future.wait_for(chrono::seconds(0)) ==
-            future_status::ready) {
+        _loaded_future.wait_for(chrono::seconds(0)) == future_status::ready) {
       // Yes
       _loaded_future.get();
       _loaded = true;
@@ -173,14 +172,12 @@ void Scene::LoadAsync() { _loaded_future = std::async(&Scene::Load, this); }
 
 sf::Vector2u Engine::getWindowSize() { return _window->getSize(); }
 
-sf::RenderWindow& Engine::GetWindow() { return *_window; }
+sf::RenderWindow &Engine::GetWindow() { return *_window; }
 
 namespace timing {
 // Return time since Epoc
 long long now() {
-  return std::chrono::high_resolution_clock::now()
-      .time_since_epoch()
-      .count();
+  return std::chrono::high_resolution_clock::now().time_since_epoch().count();
 }
 // Return time since last() was last called.
 long long last() {
